@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class IntList extends StateNotifier<List<int>> {
-  IntList() : super([]);
+  IntList() : super([9, 8, 7, 6, 5, 4, 3, 2, 1]);
 
   void add(int num) {
     state = [...state, num];

@@ -1,10 +1,9 @@
-import 'dart:html';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_experiment/main.dart';
 import 'dart:developer' as developer;
+
+import '../counters/simple_list.dart';
 
 class CosoList extends StatefulHookConsumerWidget {
   const CosoList({Key? key}) : super(key: key);
@@ -25,45 +24,28 @@ class _CosoListState extends ConsumerState<CosoList> {
 
   @override
   Widget build(BuildContext context) {
-    var list = ref.watch(internalListProvider);
-    return Column(
+    final listB = ref.watch(internalListProvider);
+    return ProviderScope(
+        child: Column(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
           child: ElevatedButton(
               onPressed: () {
-                ref.read(internalListProvider.notifier).add(1);
-                developer.log('${ref.read(internalListProvider.notifier).list}',
-                    name: 'CosoList');
+                var list = ref.read(internalListProvider);
+                ref.read(internalListProvider).add(list.length + 1);
+                developer.log('$list', name: 'CosoList');
+                setState(() {});
               },
-              child: const Flexible(child: Text('Add'))),
+              child: const Text('Add')),
         ),
-        Flexible(
-          child: ListView(
-            children: list.map((e) => Flexible(child: Text('$e'))).toList(),
-          ),
-        ),
+        // Consumer(builder: (context, ref, _) {
+        //   var list = ref.watch(internalListProvider);
+        //   developer.log('list: $list', name: 'Consumer');
+        //   return Column(children: );
+        // }),
+        ...listB.map((e) => Text('$e')).toList()
       ],
-    );
-  }
-}
-
-class SimpleList extends StateNotifier<List<int>> {
-  SimpleList({required List<int> list}) : super(list);
-
-  void add(int num) {
-    state = [...state, num];
-  }
-
-  List<int> get list => state;
-
-  int get last {
-    developer.log('last: ${state.last}', name: 'SimpleList');
-    return state.last;
-  }
-
-  int get length {
-    developer.log('len: ${state.length}', name: 'SimpleList');
-    return state.length;
+    ));
   }
 }
